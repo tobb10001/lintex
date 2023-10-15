@@ -32,6 +32,9 @@ func main() {
 	}
 
 	query, err := sitter.NewQuery(pattern, lang)
+	if err != nil {
+		panic(err)
+	}
 	cursor := sitter.NewQueryCursor()
 	defer cursor.Close()
 	cursor.Exec(query, tree)
@@ -42,10 +45,9 @@ func main() {
 			break
 		}
 		match = cursor.FilterPredicates(match, source)
-		for idx, c := range match.Captures {
-			if idx != 0 {
-				continue
-			}
+		for _, c := range match.Captures {
+			if query.CaptureNameForId(c.Index) != "caption" { continue }
+			fmt.Println(query.CaptureNameForId(c.Index))
 			fmt.Println(c.Node.Content(source))
 		}
 	}
