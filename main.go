@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
+	"os"
 
 	"lintex/reader"
 	"lintex/rules"
@@ -12,7 +13,11 @@ import (
 )
 
 func main() {
-	source, err := reader.Read("test.tex")
+	if len(os.Args) != 2 {
+		fmt.Printf("usage: %s <filename>\n", os.Args[0])
+		os.Exit(1)
+	}
+	source, err := reader.Read(os.Args[1])
 	if err != nil {
 		panic(err)
 	}
