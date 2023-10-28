@@ -24,5 +24,17 @@ func GetRules() []Rule {
 			`),
 			Predicate: "caption",
 		},
+		{
+			Name: "Citation After Tilde",
+			Description: "A citation must be preceded by a word, that ends in a tilde to prevent a linebreak in between.",
+			Pattern: []byte(`
+				(text
+				  word: (word) @word (#not-match? @word "\\~$")
+				  .
+				  word: (citation) @cite
+				) @text
+			`),
+			Predicate: "cite",
+		},
 	}
 }
