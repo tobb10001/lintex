@@ -1,9 +1,9 @@
 package rules
 
 import (
-	"strings"
-
 	sitter "github.com/smacker/go-tree-sitter"
+
+	"lintex/tslatex"
 )
 
 type Range struct {
@@ -26,58 +26,31 @@ func (are ApplyRuleError) Error() string {
 	return are.message
 }
 
+func ApplyRule(tree *sitter.Node, source []byte, rule *Rule) ([]*Range, error) {
+	query, matches, err := tslatex.GetMatches(tree, rule.Pattern, source)
+	if err != nil {
+		return nil, err
+	}
+
+	var violations []*Range
+
+	for _, match := range matches {
+		rang, err := rule.Apply(query, match, source)
+		if err != nil {
+			panic(err)
+		}
+		if rang != nil {
+			violations = append(violations, rang)
+		}
+	}
+
+	return violations, nil
+
+}
+
 func GetRules() []Rule {
 	return []Rule{
-		{
-			Name:        "Caption Trailing Period",
-			Description: "A caption should not have a trailing period, because it would end up in the ToX as well.",
-			Pattern: []byte(`
-				(caption
-				  long: (curly_group
-					(text 
-					  (word) @last_word (#match? @last_word "\\.$")
-					  .
-					)
-				  )
-				) @caption
-			`),
-			Apply: func(query *sitter.Query, match *sitter.QueryMatch, _ []byte) (*Range, error) {
-				for _, capture := range match.Captures {
-					if query.CaptureNameForId(capture.Index) == "caption" {
-						return &Range{Start: capture.Node.StartPoint(), End: capture.Node.EndPoint()}, nil
-					}
-				}
-				return nil, ApplyRuleError{"Could not find a capture for the `@caption` predicate..."}
-			},
-		},
-		{
-			Name:        "Citation After Tilde",
-			Description: "A citation must be preceded by a word, that ends in a tilde to prevent a linebreak in between.",
-			Pattern: []byte(`
-				(text
-				  word: (word) @word 
-				  .
-				  word: (citation) @cite
-				)
-			`),
-			Apply: func(query *sitter.Query, match *sitter.QueryMatch, input []byte) (*Range, error) {
-				var word, cite sitter.QueryCapture
-				for _, capture := range match.Captures {
-					capture_name := query.CaptureNameForId(capture.Index)
-					if capture_name == "word" {
-						word = capture
-					} else if capture_name == "cite" {
-						cite = capture
-					}
-				}
-				if !strings.HasSuffix(word.Node.Content(input), "~") {
-					return &Range{word.Node.StartPoint(), cite.Node.EndPoint()}, nil
-				}
-				if word.Node.EndPoint().Row < cite.Node.StartPoint().Row || cite.Node.StartPoint().Column-word.Node.EndPoint().Column != 1 {
-					return &Range{word.Node.StartPoint(), cite.Node.EndPoint()}, nil
-				}
-				return nil, nil
-			},
-		},
+		CaptionTrailingPeriod(),
+		CitationTilde(),
 	}
 }

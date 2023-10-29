@@ -27,19 +27,13 @@ func main() {
 
 	for _, rule := range rules.GetRules() {
 
-		query, matches, err := tslatex.GetMatches(tree, rule.Pattern, source)
+		violations, err := rules.ApplyRule(tree, source, &rule)
 		if err != nil {
 			panic(err)
 		}
 
-		for _, match := range matches {
-			rang, err := rule.Apply(query, match, source)
-			if err != nil {
-				panic(err)
-			}
-			if rang != nil {
-				output.PrintRuleViolation(&rule, rang, source)
-			}
+		for _, violation := range violations {
+			output.PrintRuleViolation(&rule, violation, source)
 		}
 	}
 }
