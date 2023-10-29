@@ -1,2 +1,2 @@
 tslatex/*.c linguist-vendored
-tslatex/*.h linguist-vendored
+tslatex/tree_sitter/*.h linguist-vendored
