@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 
+	"lintex/output"
 	"lintex/reader"
 	"lintex/rules"
 	"lintex/tslatex"
@@ -37,10 +38,7 @@ func main() {
 				panic(err)
 			}
 			if rang != nil {
-				fmt.Println(rule.Name)
-				fmt.Println(rang)
-				fmt.Println(rule.Description)
-				fmt.Println("")
+				output.PrintRuleViolation(&rule, rang, source)
 			}
 		}
 	}

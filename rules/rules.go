@@ -7,8 +7,8 @@ import (
 )
 
 type Range struct {
-	start sitter.Point
-	end   sitter.Point
+	Start sitter.Point
+	End   sitter.Point
 }
 
 type Rule struct {
@@ -44,7 +44,7 @@ func GetRules() []Rule {
 			Apply: func(query *sitter.Query, match *sitter.QueryMatch, _ []byte) (*Range, error) {
 				for _, capture := range match.Captures {
 					if query.CaptureNameForId(capture.Index) == "caption" {
-						return &Range{start: capture.Node.StartPoint(), end: capture.Node.EndPoint()}, nil
+						return &Range{Start: capture.Node.StartPoint(), End: capture.Node.EndPoint()}, nil
 					}
 				}
 				return nil, ApplyRuleError{"Could not find a capture for the `@caption` predicate..."}
