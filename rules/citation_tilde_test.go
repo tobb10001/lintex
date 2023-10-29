@@ -11,23 +11,23 @@ import (
 
 func TestCitationTilde(t *testing.T) {
 	rule := rules.CitationTilde()
-	tests := []struct{
-		name string
+	tests := []struct {
+		name  string
 		input []byte
 		error bool
 	}{
 		{
-			name: "Correct citation",
+			name:  "Correct citation",
 			input: []byte(`Correct~\cite{sth}.`),
 			error: false,
 		},
 		{
-			name: "Additional space",
+			name:  "Additional space",
 			input: []byte(`Correct~ \cite{sth}.`),
 			error: true,
 		},
 		{
-			name: "Missing tilde",
+			name:  "Missing tilde",
 			input: []byte(`Correct \cite{sth}.`),
 			error: true,
 		},
