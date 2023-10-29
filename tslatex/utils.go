@@ -6,17 +6,17 @@ import (
 	sitter "github.com/smacker/go-tree-sitter"
 )
 
-func GetCaptures(tree *sitter.Node, pattern []byte, predicate string, source []byte) ([]sitter.QueryCapture, error) {
+func GetMatches(tree *sitter.Node, pattern []byte, source []byte) (*sitter.Query, []*sitter.QueryMatch, error) {
 	cursor := sitter.NewQueryCursor()
 	defer cursor.Close()
 
 	query, err := sitter.NewQuery(pattern, GetLanguage())
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	cursor.Exec(query, tree)
 
-	var captures []sitter.QueryCapture
+	var matches []*sitter.QueryMatch
 
 	for {
 		match, ok := cursor.NextMatch()
@@ -24,14 +24,12 @@ func GetCaptures(tree *sitter.Node, pattern []byte, predicate string, source []b
 			break
 		}
 		match = cursor.FilterPredicates(match, source)
-		for _, capture := range match.Captures {
-			if query.CaptureNameForId(capture.Index) == predicate {
-				captures = append(captures, capture)
-			}
+		if len(match.Captures) > 0 {
+			matches = append(matches, match)
 		}
 	}
 
-	return captures, nil
+	return query, matches, nil
 }
 
 func GetTree(source []byte) (*sitter.Node, error) {

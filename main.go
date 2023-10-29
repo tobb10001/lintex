@@ -26,16 +26,22 @@ func main() {
 
 	for _, rule := range rules.GetRules() {
 
-		captures, err := tslatex.GetCaptures(tree, rule.Pattern, rule.Predicate, source)
+		query, matches, err := tslatex.GetMatches(tree, rule.Pattern, source)
 		if err != nil {
 			panic(err)
 		}
 
-		for _, capture := range captures {
-			fmt.Println(rule.Name)
-			fmt.Println(capture.Node.Content(source))
-			fmt.Println(rule.Description)
-			fmt.Println("")
+		for _, match := range matches {
+			rang, err := rule.Apply(query, match, source)
+			if err != nil {
+				panic(err)
+			}
+			if rang != nil {
+				fmt.Println(rule.Name)
+				fmt.Println(rang)
+				fmt.Println(rule.Description)
+				fmt.Println("")
+			}
 		}
 	}
 }
