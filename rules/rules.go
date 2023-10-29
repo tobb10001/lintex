@@ -6,26 +6,6 @@ import (
 	"lintex/tslatex"
 )
 
-type Range struct {
-	Start sitter.Point
-	End   sitter.Point
-}
-
-type Rule struct {
-	Name        string
-	Description string
-	Pattern     []byte
-	Apply       func(*sitter.Query, *sitter.QueryMatch, []byte) (*Range, error)
-}
-
-type ApplyRuleError struct {
-	message string
-}
-
-func (are ApplyRuleError) Error() string {
-	return are.message
-}
-
 func ApplyRule(tree *sitter.Node, source []byte, rule *Rule) ([]*Range, error) {
 	query, matches, err := tslatex.GetMatches(tree, rule.Pattern, source)
 	if err != nil {
