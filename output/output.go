@@ -1,13 +1,16 @@
+// Package for making the findings readable.
 package output
 
 import (
+	"bytes"
 	"fmt"
 
 	"lintex/rules"
 )
 
+// Output the violation of a rule in a human readable format to stdout.
 func PrintRuleViolation(violation *rules.Violation) {
-	lines := getLines(violation.Source)
+	lines := bytes.Split(violation.Source, []byte("\n"))
 
 	fmt.Println(violation.Rule.Name())
 	printSection(lines, violation.Range)
@@ -15,19 +18,10 @@ func PrintRuleViolation(violation *rules.Violation) {
 	fmt.Println("")
 }
 
-func getLines(source []byte) [][]byte {
-	var res [][]byte
-	res = append(res, []byte(""))
-	for _, byt := range source {
-		if byt == '\n' {
-			res = append(res, []byte(""))
-		} else {
-			res[len(res) - 1] = append(res[len(res) - 1], byt)
-		}
-	}
-	return res
-}
-
+// Print a subset of the input.
+//
+// When printing, one line above and one line below the section in question is also
+// printed to provide context.
 func printSection(lines [][]byte, rang *rules.Range) {
 	if rang.Start.Row != 0 {
 		fmt.Println(string(lines[rang.Start.Row - 1][:]))

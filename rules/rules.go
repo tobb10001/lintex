@@ -1,3 +1,6 @@
+// Package to hold all logic considering rules.
+//
+// This includes some rules themselves.
 package rules
 
 import (
@@ -6,6 +9,11 @@ import (
 	"lintex/tslatex"
 )
 
+// Apply a rule to a given syntax tree.
+//
+// In order to filter predicates, this method also needs access to the source.
+// It returns the ranges, that violate the rule. It might return an empty slice, if
+// there are no violations to the given rule.
 func ApplyRule(tree *sitter.Node, source []byte, rule Rule) ([]*Range, error) {
 	query, matches, err := tslatex.GetMatches(tree, rule.Pattern(), source)
 	if err != nil {
@@ -15,7 +23,7 @@ func ApplyRule(tree *sitter.Node, source []byte, rule Rule) ([]*Range, error) {
 	var violations []*Range
 
 	for _, match := range matches {
-		rang, err := rule.Apply()(query, match, source)
+		rang, err := rule.Apply(query, match, source)
 		if err != nil {
 			panic(err)
 		}
@@ -28,6 +36,7 @@ func ApplyRule(tree *sitter.Node, source []byte, rule Rule) ([]*Range, error) {
 
 }
 
+// Optain a list of all configured rules.
 func GetRules() []Rule {
 	return []Rule{
 		CaptionTrailingPeriod(),

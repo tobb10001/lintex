@@ -1,3 +1,4 @@
+// Package to wrap smacker/go-tree-sitter and the LaTeX grammar for Tree-sitter.
 package tslatex
 
 import (
@@ -6,6 +7,8 @@ import (
 	sitter "github.com/smacker/go-tree-sitter"
 )
 
+// Get Matches in the given tree for the given pattern.
+// Includes predicate filtering and therefore needs the original source code.
 func GetMatches(tree *sitter.Node, pattern []byte, source []byte) (*sitter.Query, []*sitter.QueryMatch, error) {
 	cursor := sitter.NewQueryCursor()
 	defer cursor.Close()
@@ -32,6 +35,7 @@ func GetMatches(tree *sitter.Node, pattern []byte, source []byte) (*sitter.Query
 	return query, matches, nil
 }
 
+// Generate the LaTeX syntax tree.
 func GetTree(source []byte) (*sitter.Node, error) {
 
 	parser := sitter.NewParser()

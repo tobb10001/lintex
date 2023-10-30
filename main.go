@@ -1,3 +1,4 @@
+// Lintex: A linter for LaTeX, powered by Tree-sitter.
 package main
 
 import (

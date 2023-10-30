@@ -1,3 +1,4 @@
+// Package to provide functionality needed to read files.
 package reader
 
 import (
@@ -6,6 +7,7 @@ import (
 	"os"
 )
 
+// Higher level method to read a file.
 func Read(filename string) ([]byte, error) {
 	file, err := os.Open(filename)
 	if err != nil {
