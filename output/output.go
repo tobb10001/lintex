@@ -6,12 +6,12 @@ import (
 	"lintex/rules"
 )
 
-func PrintRuleViolation(rule *rules.Rule, rang *rules.Range, source []byte) {
-	lines := getLines(source)
+func PrintRuleViolation(violation *rules.Violation) {
+	lines := getLines(violation.Source)
 
-	fmt.Println(rule.Name)
-	printSection(lines, rang)
-	fmt.Println(rule.Description)
+	fmt.Println(violation.Rule.Name())
+	printSection(lines, violation.Range)
+	fmt.Println(violation.Rule.Description())
 	fmt.Println("")
 }
 

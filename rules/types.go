@@ -15,9 +15,29 @@ type Range struct {
 	End   sitter.Point
 }
 
-type Rule struct {
-	Name        string
-	Description string
-	Pattern     []byte
-	Apply       func(*sitter.Query, *sitter.QueryMatch, []byte) (*Range, error)
+type ApplyRuleFunc func(*sitter.Query, *sitter.QueryMatch, []byte) (*Range, error)
+
+type Rule interface {
+	Apply() ApplyRuleFunc
+	Description() string
+	Name() string
+	Pattern() []byte
+}
+
+type NativeRule struct {
+	name        string
+	description string
+	pattern     []byte
+	apply       ApplyRuleFunc
+}
+
+func (nr *NativeRule) Apply() ApplyRuleFunc { return nr.apply }
+func (nr *NativeRule) Description() string  { return nr.description }
+func (nr *NativeRule) Name() string         { return nr.name }
+func (nr *NativeRule) Pattern() []byte      { return nr.pattern }
+
+type Violation struct {
+	Rule   *Rule
+	Range  *Range
+	Source []byte
 }

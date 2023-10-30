@@ -7,7 +7,7 @@ import (
 )
 
 func ApplyRule(tree *sitter.Node, source []byte, rule *Rule) ([]*Range, error) {
-	query, matches, err := tslatex.GetMatches(tree, rule.Pattern, source)
+	query, matches, err := tslatex.GetMatches(tree, rule.Pattern(), source)
 	if err != nil {
 		return nil, err
 	}
@@ -15,7 +15,7 @@ func ApplyRule(tree *sitter.Node, source []byte, rule *Rule) ([]*Range, error) {
 	var violations []*Range
 
 	for _, match := range matches {
-		rang, err := rule.Apply(query, match, source)
+		rang, err := rule.Apply()(query, match, source)
 		if err != nil {
 			panic(err)
 		}
@@ -28,8 +28,8 @@ func ApplyRule(tree *sitter.Node, source []byte, rule *Rule) ([]*Range, error) {
 
 }
 
-func GetRules() []Rule {
-	return []Rule{
+func GetRules() []*Rule {
+	return []*Rule{
 		CaptionTrailingPeriod(),
 		CitationTilde(),
 	}

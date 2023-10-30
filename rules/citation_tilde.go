@@ -2,22 +2,27 @@ package rules
 
 import (
 	"strings"
+	"sync"
 
 	sitter "github.com/smacker/go-tree-sitter"
 )
 
-func CitationTilde() Rule {
-	return Rule{
-			Name:        "Citation Tilde",
-			Description: "A citation must be preceded by a word, that ends in a tilde to prevent a linebreak in between.",
-			Pattern: []byte(`
+var citationTildeOnce sync.Once
+var citationTilde *Rule
+
+func CitationTilde() *Rule {
+	citationTildeOnce.Do(func() {
+		citationTilde = &Rule{
+			name:        "Citation Tilde",
+			description: "A citation must be preceded by a word, that ends in a tilde to prevent a linebreak in between.",
+			pattern: []byte(`
 				(text
 				  word: (word) @word 
 				  .
 				  word: (citation) @cite
 				)
 			`),
-			Apply: func(query *sitter.Query, match *sitter.QueryMatch, input []byte) (*Range, error) {
+			apply: func(query *sitter.Query, match *sitter.QueryMatch, input []byte) (*Range, error) {
 				var word, cite sitter.QueryCapture
 				for _, capture := range match.Captures {
 					capture_name := query.CaptureNameForId(capture.Index)
@@ -36,4 +41,6 @@ func CitationTilde() Rule {
 				return nil, nil
 			},
 		}
+	})
+	return citationTilde
 }
