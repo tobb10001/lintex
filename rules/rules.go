@@ -6,7 +6,7 @@ import (
 	"lintex/tslatex"
 )
 
-func ApplyRule(tree *sitter.Node, source []byte, rule *Rule) ([]*Range, error) {
+func ApplyRule(tree *sitter.Node, source []byte, rule Rule) ([]*Range, error) {
 	query, matches, err := tslatex.GetMatches(tree, rule.Pattern(), source)
 	if err != nil {
 		return nil, err
@@ -28,8 +28,8 @@ func ApplyRule(tree *sitter.Node, source []byte, rule *Rule) ([]*Range, error) {
 
 }
 
-func GetRules() []*Rule {
-	return []*Rule{
+func GetRules() []Rule {
+	return []Rule{
 		CaptionTrailingPeriod(),
 		CitationTilde(),
 	}

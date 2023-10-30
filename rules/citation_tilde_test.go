@@ -43,7 +43,7 @@ func TestCitationTilde(t *testing.T) {
 		t.Run(testcase.name, func(t *testing.T) {
 			tree, err := tslatex.GetTree(testcase.input)
 			assert.NoError(t, err)
-			violations, err := rules.ApplyRule(tree, testcase.input, &rule)
+			violations, err := rules.ApplyRule(tree, testcase.input, rule)
 			assert.NoError(t, err)
 			if testcase.error {
 				assert.Equal(t, 1, len(violations))

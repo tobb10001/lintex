@@ -31,13 +31,13 @@ type NativeRule struct {
 	apply       ApplyRuleFunc
 }
 
-func (nr *NativeRule) Apply() ApplyRuleFunc { return nr.apply }
-func (nr *NativeRule) Description() string  { return nr.description }
-func (nr *NativeRule) Name() string         { return nr.name }
-func (nr *NativeRule) Pattern() []byte      { return nr.pattern }
+func (nr NativeRule) Apply() ApplyRuleFunc { return nr.apply }
+func (nr NativeRule) Description() string  { return nr.description }
+func (nr NativeRule) Name() string         { return nr.name }
+func (nr NativeRule) Pattern() []byte      { return nr.pattern }
 
 type Violation struct {
-	Rule   *Rule
+	Rule   Rule
 	Range  *Range
 	Source []byte
 }

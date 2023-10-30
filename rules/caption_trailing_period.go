@@ -7,11 +7,11 @@ import (
 )
 
 var captionTrailingPeriodOnce sync.Once
-var captionTrailingPeriod *Rule
+var captionTrailingPeriod *NativeRule
 
-func CaptionTrailingPeriod() *Rule {
+func CaptionTrailingPeriod() *NativeRule {
 	captionTrailingPeriodOnce.Do(func() {
-		captionTrailingPeriod = &Rule{
+		captionTrailingPeriod = &NativeRule{
 			name:        "Caption Trailing Period",
 			description: "A caption should not have a trailing period, because it would end up in the ToX as well.",
 			pattern: []byte(`
