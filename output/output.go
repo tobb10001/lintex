@@ -12,6 +12,11 @@ import (
 func PrintRuleViolation(violation *rules.Violation) {
 	lines := bytes.Split(violation.Source, []byte("\n"))
 
+	fmt.Printf("%s:%d:%d",
+		violation.File,
+		violation.Range.Start.Row + 1,
+		violation.Range.Start.Column,
+	)
 	fmt.Println(violation.Rule.Name())
 	printSection(lines, violation.Range)
 	fmt.Println(violation.Rule.Description())

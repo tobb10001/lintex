@@ -42,25 +42,26 @@ type NativeRule struct {
 	name        string
 	description string
 	pattern     []byte
-	apply       func (*sitter.Query, *sitter.QueryMatch, []byte) (*Range, error)
+	apply       func(*sitter.Query, *sitter.QueryMatch, []byte) (*Range, error)
 }
 
 func (nr NativeRule) Apply(query *sitter.Query, match *sitter.QueryMatch, source []byte) (*Range, error) {
 	return nr.apply(query, match, source)
 }
-func (nr NativeRule) Description() string  { return nr.description }
-func (nr NativeRule) Name() string         { return nr.name }
-func (nr NativeRule) Pattern() []byte      { return nr.pattern }
+func (nr NativeRule) Description() string { return nr.description }
+func (nr NativeRule) Name() string        { return nr.name }
+func (nr NativeRule) Pattern() []byte     { return nr.pattern }
 
 // A violation to a rule.
 //
 // This is the intermediate product produced by the linter.
 // It enables to later produce different kinds of output.
 type Violation struct {
+	File string
 	// Reference to the rule, that was violated.
-	Rule   Rule
+	Rule Rule
 	// Range, that shoudl be associated with the violation.
-	Range  *Range
+	Range *Range
 	// Source code of the file, to track back the original code if needed.
 	Source []byte
 }
