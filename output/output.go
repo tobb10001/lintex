@@ -12,7 +12,7 @@ import (
 func PrintRuleViolation(violation *rules.Violation) {
 	lines := bytes.Split(violation.Source, []byte("\n"))
 
-	fmt.Printf("%s:%d:%d",
+	fmt.Printf("%s:%d:%d\n",
 		violation.File,
 		violation.Range.Start.Row + 1,
 		violation.Range.Start.Column,
