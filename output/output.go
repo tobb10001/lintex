@@ -13,17 +13,17 @@ import (
 )
 
 // Output the violation of a rule in a human readable format to stdout.
-func PrintRuleViolation(violation *rules.Violation) {
+func PrintRuleViolation(violation *rules.Violation) error {
 	lines := bytes.Split(violation.Source, []byte("\n"))
 
 	wd, err := os.Getwd()
 	if err != nil {
-		panic("Cannot get working directory???")
+		return err
 	}
 	relPath, err := filepath.Rel(wd, violation.File)
 	if err != nil {
 		log.Error().Str("abspath", violation.File).Msg("Couldn't convert abspath to relative.")
-		relPath = violation.File
+		return err
 	}
 
 	fmt.Printf("%s:%d:%d\n",
@@ -35,6 +35,7 @@ func PrintRuleViolation(violation *rules.Violation) {
 	printSection(lines, violation.Range)
 	fmt.Println(violation.Rule.Description())
 	fmt.Println("")
+	return nil
 }
 
 // Print a subset of the input.

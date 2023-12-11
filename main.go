@@ -27,7 +27,7 @@ func main() {
 
 			ranges, err := rules.ApplyRule(file, rule)
 			if err != nil {
-				panic(err)
+				log.Warn().Err(err).Str("name", rule.Name()).Msg("Error applying a rule.")
 			}
 
 			for _, rang := range ranges {
@@ -39,6 +39,9 @@ func main() {
 	}
 
 	for _, violation := range violations {
-		output.PrintRuleViolation(&violation)
+		err := output.PrintRuleViolation(&violation)
+		if err != nil {
+			log.Warn().Err(err).Msg("Failed to print a violation.")
+		}
 	}
 }
