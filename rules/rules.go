@@ -40,5 +40,6 @@ func GetRules() []Rule {
 	return []Rule{
 		CaptionTrailingPeriod(),
 		CitationTilde(),
+		Error(),
 	}
 }
