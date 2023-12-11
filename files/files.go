@@ -14,9 +14,9 @@ import (
 )
 
 type File struct {
-	absolute_path string
-	tree          *sitter.Node
-	source        []byte
+	Path   string
+	Tree   *sitter.Node
+	Source []byte
 }
 
 func FindFilesFS(filesystem fs.FS, prefix string) ([]string, error) {
@@ -87,9 +87,9 @@ func GetFiles() ([]File, error) {
 			return nil, err
 		}
 		files = append(files, File{
-			absolute_path: path,
-			tree:          tree,
-			source:        source,
+			Path:   path,
+			Tree:   tree,
+			Source: source,
 		})
 	}
 	return files, nil

@@ -4,8 +4,7 @@
 package rules
 
 import (
-	sitter "github.com/smacker/go-tree-sitter"
-
+	"lintex/files"
 	"lintex/tslatex"
 )
 
@@ -14,8 +13,8 @@ import (
 // In order to filter predicates, this method also needs access to the source.
 // It returns the ranges, that violate the rule. It might return an empty slice, if
 // there are no violations to the given rule.
-func ApplyRule(tree *sitter.Node, source []byte, rule Rule) ([]*Range, error) {
-	query, matches, err := tslatex.GetMatches(tree, rule.Pattern(), source)
+func ApplyRule(file files.File, rule Rule) ([]*Range, error) {
+	query, matches, err := tslatex.GetMatches(file.Tree, rule.Pattern(), file.Source)
 	if err != nil {
 		return nil, err
 	}
@@ -23,7 +22,7 @@ func ApplyRule(tree *sitter.Node, source []byte, rule Rule) ([]*Range, error) {
 	var violations []*Range
 
 	for _, match := range matches {
-		rang, err := rule.Apply(query, match, source)
+		rang, err := rule.Apply(query, match, file.Source)
 		if err != nil {
 			panic(err)
 		}
