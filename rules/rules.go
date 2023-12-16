@@ -6,6 +6,8 @@ package rules
 import (
 	"lintex/files"
 	"lintex/tslatex"
+
+	"github.com/rs/zerolog/log"
 )
 
 // Apply a rule to a given syntax tree.
@@ -18,6 +20,8 @@ func ApplyRule(file files.File, rule Rule) ([]*Range, error) {
 	if err != nil {
 		return nil, err
 	}
+
+	log.Trace().Int("len", len(matches)).Str("rule", rule.Name()).Str("file", file.Path).Msg("Found matches for rule.")
 
 	var violations []*Range
 
@@ -36,10 +40,20 @@ func ApplyRule(file files.File, rule Rule) ([]*Range, error) {
 }
 
 // Optain a list of all configured rules.
-func GetRules() []Rule {
-	return []Rule{
-		CaptionTrailingPeriod(),
+func GetRules() ([]Rule, error) {
+	log.Debug().Msg("Getting rules...")
+	toml_vendored, err := TomlGetVendored()
+	if err != nil {
+		return nil, err
+	}
+	var rules []Rule
+	// rules = append(rules, toml_vendored...)
+	for _, rule := range toml_vendored {
+		rules = append(rules, rule)
+	}
+	rules = append(rules, []Rule{
 		CitationTilde(),
 		Error(),
-	}
+	}...)
+	return rules, nil
 }
