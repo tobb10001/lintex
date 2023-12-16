@@ -49,19 +49,22 @@ func printSection(lines [][]byte, rang *rules.Range) {
 		fmt.Println(fmt.Sprintf("%4d: ", rang.Start.Row) + string(lines[rang.Start.Row-1][:]))
 	}
 
+	// Define the highlight color
+	h := color.New(color.FgYellow)
+
 	// The lines that contain the match.
 	fmt.Print(fmt.Sprintf("%4d: ", rang.Start.Row+1) + string(lines[rang.Start.Row][:rang.Start.Column]))
-	color.Set(color.FgYellow)
 	if rang.Start.Row == rang.End.Row {
-		fmt.Print(string(lines[rang.Start.Row][rang.Start.Column:rang.End.Column]))
+		h.Print(string(lines[rang.Start.Row][rang.Start.Column:rang.End.Column]))
 	} else {
-		fmt.Print(fmt.Sprintf("%4d: ", rang.Start.Row+1) + string(lines[rang.Start.Row][rang.Start.Column:]) + "\n")
+		h.Print(string(lines[rang.Start.Row][rang.Start.Column:]) + "\n")
 		for line := rang.Start.Row + 1; line < rang.End.Row; line++ {
-			fmt.Print(fmt.Sprintf("%4d: ", line+1) + string(lines[line]) + "\n")
+			fmt.Print(fmt.Sprintf("%4d: ", line+1))
+			h.Print(string(lines[line]) + "\n")
 		}
-		fmt.Print(fmt.Sprintf("%4d: ", rang.End.Row+1) + string(lines[rang.End.Row][:rang.End.Column]))
+		fmt.Print(fmt.Sprintf("%4d: ", rang.End.Row+1))
+		h.Print(string(lines[rang.End.Row][:rang.End.Column]))
 	}
-	color.Unset()
 	fmt.Print(string(lines[rang.End.Row][rang.End.Column:]) + "\n")
 
 	// The line after the match.
