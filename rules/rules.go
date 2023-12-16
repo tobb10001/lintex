@@ -53,7 +53,6 @@ func GetRules() ([]Rule, error) {
 	}
 	rules = append(rules, []Rule{
 		CitationTilde(),
-		Error(),
 	}...)
 	return rules, nil
 }

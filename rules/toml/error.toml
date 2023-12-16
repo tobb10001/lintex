@@ -1,0 +1,13 @@
+name = "ERROR"
+description = "Tree-Sitter encountered an error while parsing the file. This is most probably a syntax error."
+pattern = '(ERROR) @error'
+capture = "error"
+
+
+[[tests.obediences]]
+name = 'An `\input` with a filename given.'
+input = '\input{foo}'
+
+[[tests.violations]]
+name = 'An `\input` with no filename given.'
+input = '\input{}'
