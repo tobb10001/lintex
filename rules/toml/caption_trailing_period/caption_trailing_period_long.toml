@@ -1,7 +1,8 @@
-name = "Caption Trailing Period"
+name = "Caption Trailing Period - Long"
 description = "A caption should not have a trailing period, because it would end up in the ToX as well."
 pattern = '''
 	(caption
+	  .
 	  long: (curly_group
 		(text
 		  (word) @last_word (#match? @last_word "\\.$")
@@ -17,6 +18,16 @@ capture = "caption"
 name = "Without trailing period"
 input = '\caption{This caption has a trailing period}'
 
+# If there is a short caption present, this rule doesn't apply.
+[[tests.obediences]]
+name = "Short caption without trailing period"
+input = '\caption[Short]{The other caption is allowed to have a trailing period.}'
+
+[[tests.obediences]]
+name = "Short caption with trailing period"
+input = '\caption[Short.]{The other caption is allowed to have a trailing period.}'
+
 [[tests.violations]]
 name = "With trailing period"
 input = '\caption{This caption has a trailing period.}'
+
