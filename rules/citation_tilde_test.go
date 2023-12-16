@@ -38,6 +38,14 @@ func TestCitationTilde(t *testing.T) {
 \cite{sth}.`),
 			error: true,
 		},
+		{
+			name: "citeauthor",
+			input: []byte(`Allowed with \citeauthor{myself}.`),
+		},
+		{
+			name: "Citeauthor",
+			input: []byte(`Allowed with \Citeauthor{myself}.`),
+		},
 	}
 
 	for _, testcase := range tests {

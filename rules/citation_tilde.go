@@ -32,6 +32,12 @@ func CitationTilde() *NativeRule {
 						cite = capture
 					}
 				}
+				// In Tree-Sitter `\cite{...}` and `\citeauthor{...}` are idencital, but
+				// `\citeauthor` should not trigger an error.
+				citeStr := cite.Node.Content(input)
+				if strings.HasPrefix(citeStr, `\citeauthor`) || strings.HasPrefix(citeStr, `\Citeauthor`)  {
+					return nil, nil
+				}
 				if !strings.HasSuffix(word.Node.Content(input), "~") {
 					return &Range{word.Node.StartPoint(), cite.Node.EndPoint()}, nil
 				}
