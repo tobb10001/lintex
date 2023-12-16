@@ -9,6 +9,7 @@ import (
 
 	"lintex/rules"
 
+	"github.com/fatih/color"
 	"github.com/rs/zerolog/log"
 )
 
@@ -43,13 +44,28 @@ func PrintRuleViolation(violation *rules.Violation) error {
 // When printing, one line above and one line below the section in question is also
 // printed to provide context.
 func printSection(lines [][]byte, rang *rules.Range) {
+	// The line before the match.
 	if rang.Start.Row != 0 {
-		fmt.Println(string(lines[rang.Start.Row-1][:]))
+		fmt.Println(fmt.Sprintf("%4d: ", rang.Start.Row) + string(lines[rang.Start.Row-1][:]))
 	}
-	for line := rang.Start.Row; line <= rang.End.Row; line++ {
-		fmt.Println(string(lines[line][:]))
+
+	// The lines that contain the match.
+	fmt.Print(fmt.Sprintf("%4d: ", rang.Start.Row+1) + string(lines[rang.Start.Row][:rang.Start.Column]))
+	color.Set(color.FgYellow)
+	if rang.Start.Row == rang.End.Row {
+		fmt.Print(string(lines[rang.Start.Row][rang.Start.Column:rang.End.Column]))
+	} else {
+		fmt.Print(fmt.Sprintf("%4d: ", rang.Start.Row+1) + string(lines[rang.Start.Row][rang.Start.Column:]) + "\n")
+		for line := rang.Start.Row + 1; line < rang.End.Row; line++ {
+			fmt.Print(fmt.Sprintf("%4d: ", line+1) + string(lines[line]) + "\n")
+		}
+		fmt.Print(fmt.Sprintf("%4d: ", rang.End.Row+1) + string(lines[rang.End.Row][:rang.End.Column]))
 	}
+	color.Unset()
+	fmt.Print(string(lines[rang.End.Row][rang.End.Column:]) + "\n")
+
+	// The line after the match.
 	if rang.End.Row < uint32(len(lines)) {
-		fmt.Println(string(lines[rang.End.Row+1][:]))
+		fmt.Println(fmt.Sprintf("%4d: ", rang.End.Row+2) + string(lines[rang.End.Row+1][:]))
 	}
 }
