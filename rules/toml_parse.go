@@ -5,14 +5,29 @@ import (
 	"io/fs"
 
 	"github.com/BurntSushi/toml"
+	"github.com/rs/zerolog/log"
 )
 
 func parseRuleFS(filesystem fs.FS, path string) (*TomlRule, error) {
 	var rule TomlRuleParse
-	_, err := toml.DecodeFS(filesystem, path, &rule)
+	meta, err := toml.DecodeFS(filesystem, path, &rule)
 	if err != nil {
 		return nil, err
 	}
+
+	undecoded := meta.Undecoded()
+	if len(undecoded) > 0 {
+		var keys []string
+		for _, key := range undecoded {
+			keys = append(keys, key.String())
+		}
+		log.Warn().
+			Type("fstype", filesystem).
+			Str("file", path).
+			Strs("keys", keys).
+			Msg("Found unedecoded key in TOML file.")
+	}
+
 	return TomlRuleFromParse(&rule), nil
 }
 

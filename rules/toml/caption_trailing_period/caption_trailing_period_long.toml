@@ -30,4 +30,3 @@ input = '\caption[Short.]{The other caption is allowed to have a trailing period
 [[tests.violations]]
 name = "With trailing period"
 input = '\caption{This caption has a trailing period.}'
-
