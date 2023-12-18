@@ -19,7 +19,8 @@ func CitationTilde() *NativeRule {
 				(text
 				  word: (word) @word 
 				  .
-				  word: (citation) @cite
+				  ;; [Cc]iteauthor is also captured as citation.
+				  word: (citation) @cite (#not-match? @cite "[Cc]iteauthor")
 				)
 			`),
 			apply: func(query *sitter.Query, match *sitter.QueryMatch, input []byte) (*Range, error) {
@@ -31,12 +32,6 @@ func CitationTilde() *NativeRule {
 					} else if capture_name == "cite" {
 						cite = capture
 					}
-				}
-				// In Tree-Sitter `\cite{...}` and `\citeauthor{...}` are idencital, but
-				// `\citeauthor` should not trigger an error.
-				citeStr := cite.Node.Content(input)
-				if strings.HasPrefix(citeStr, `\citeauthor`) || strings.HasPrefix(citeStr, `\Citeauthor`)  {
-					return nil, nil
 				}
 				if !strings.HasSuffix(word.Node.Content(input), "~") {
 					return &Range{word.Node.StartPoint(), cite.Node.EndPoint()}, nil

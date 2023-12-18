@@ -23,6 +23,11 @@ func TestCitationTilde(t *testing.T) {
 			error: false,
 		},
 		{
+			name: "No tilde, no space",
+			input: []byte(`No tilde or space\cite{sth}.`),
+			error: true,
+		},
+		{
 			name:  "Additional space",
 			input: []byte(`Correct~ \cite{sth}.`),
 			error: true,
