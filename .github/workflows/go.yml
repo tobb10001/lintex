@@ -12,9 +12,20 @@ on:
 jobs:
 
   build:
-    runs-on: ubuntu-latest
+    strategy:
+       matrix:
+        platform:
+          - os: ubuntu-latest
+            name: linux
+            extension: ""
+          - os: windows-latest
+            name: windows
+            extension: ".exe"
+    runs-on: ${{ matrix.platform.os }}
+
     steps:
-    - uses: actions/checkout@v3
+    - name: Checkout code
+      uses: actions/checkout@v3
 
     - name: Set up Go
       uses: actions/setup-go@v4
@@ -22,7 +33,7 @@ jobs:
         go-version: '1.21.2'
 
     - name: Build
-      run: go build -o ${{ github.workspace }}/lintex-linux-amd64
+      run: go build -o ${{ github.workspace }}/lintex-${{ matrix.platform.name }}-amd64${{ matrix.platform.extension }}
 
     - name: Test
       run: go test -v ./...
@@ -30,5 +41,5 @@ jobs:
     - name: Archive artifacts
       uses: actions/upload-artifact@v2
       with:
-        name: lintex-linux-amd64
-        path: ${{ github.workspace }}/lintex-linux-amd64
+        name: lintex-${{ matrix.platform.name }}-amd64${{ matrix.platform.extension }}
+        path: ${{ github.workspace }}/lintex-${{ matrix.platform.name }}-amd64${{ matrix.platform.extension }}
