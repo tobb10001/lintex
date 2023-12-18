@@ -1,6 +1,8 @@
 name = "Caption Trailing Period - Short"
 description = "A caption should not have a trailing period, because it would end up in the ToX as well."
-pattern = '''
+capture = "caption"
+patterns = [
+	'''
 	(caption
 	  short: (brack_group
 		(text
@@ -9,8 +11,8 @@ pattern = '''
 		)
 	  )
 	) @caption
-'''
-capture = "caption"
+	'''
+]
 
 [[tests.obediences]]
 name = "Short caption without trailing period"

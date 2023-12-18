@@ -21,7 +21,7 @@ var vendored_toml embed.FS
 type TomlRule struct {
 	name        string
 	description string
-	pattern     []byte
+	patterns    [][]byte
 	capture     string
 	tests       TomlRuleTests
 }
@@ -36,7 +36,7 @@ type TomlRuleTestCase struct {
 	Input []byte
 }
 
-func (tr TomlRule) Apply(query *sitter.Query, match *sitter.QueryMatch, _ []byte) (*Range, error) {
+func (tr TomlRule) Apply(patternIndex int, query *sitter.Query, match *sitter.QueryMatch, _ []byte) (*Range, error) {
 	log.Trace().Str("rule", tr.Name()).Msg("Applying TOML rule.")
 	for _, capture := range match.Captures {
 		if query.CaptureNameForId(capture.Index) == tr.capture {
@@ -47,7 +47,7 @@ func (tr TomlRule) Apply(query *sitter.Query, match *sitter.QueryMatch, _ []byte
 }
 func (tr TomlRule) Description() string { return tr.description }
 func (tr TomlRule) Name() string        { return tr.name }
-func (tr TomlRule) Pattern() []byte     { return tr.pattern }
+func (tr TomlRule) Patterns() [][]byte  { return tr.patterns }
 
 func (tr TomlRule) Tests() TomlRuleTests { return tr.tests }
 
@@ -68,6 +68,7 @@ func TomlRulesFromFS(filesystem fs.FS) ([]TomlRule, error) {
 
 	var rules []TomlRule
 	for _, path := range files {
+		log.Trace().Str("file", path).Msg("Parsing TOML rule.")
 		rule, err := parseRuleFS(filesystem, path)
 		if err != nil {
 			return nil, err

@@ -34,18 +34,22 @@ func parseRuleFS(filesystem fs.FS, path string) (*TomlRule, error) {
 type TomlRuleParse struct {
 	Name        string
 	Description string
-	Pattern     string
+	Patterns    []string
 	Capture     string
 	Tests       TomlRuleTestsParse
 }
 
 func TomlRuleFromParse(trp *TomlRuleParse) *TomlRule {
+	var patterns [][]byte
+	for _, pattern := range trp.Patterns {
+		patterns = append(patterns, []byte(pattern))
+	}
 	return &TomlRule{
-		name: trp.Name,
+		name:        trp.Name,
 		description: trp.Description,
-		pattern: []byte(trp.Pattern),
-		capture: trp.Capture,
-		tests: *TomlRuleTestsFromParse(&trp.Tests),
+		patterns:    patterns,
+		capture:     trp.Capture,
+		tests:       *TomlRuleTestsFromParse(&trp.Tests),
 	}
 }
 

@@ -28,29 +28,29 @@ type Rule interface {
 	//
 	// In any case, this method is responsible for determining the range, that should
 	// be highlighted.
-	Apply(*sitter.Query, *sitter.QueryMatch, []byte) (*Range, error)
+	Apply(int, *sitter.Query, *sitter.QueryMatch, []byte) (*Range, error)
 	// Get the description of the rule.
 	Description() string
 	// Get the name of the rule.
 	Name() string
 	// Get the Tree-sitter pattern to determine violation candidates.
-	Pattern() []byte
+	Patterns() [][]byte
 }
 
 // A rule implemented completely in Go.
 type NativeRule struct {
 	name        string
 	description string
-	pattern     []byte
-	apply       func(*sitter.Query, *sitter.QueryMatch, []byte) (*Range, error)
+	patterns    [][]byte
+	apply       func(int, *sitter.Query, *sitter.QueryMatch, []byte) (*Range, error)
 }
 
-func (nr NativeRule) Apply(query *sitter.Query, match *sitter.QueryMatch, source []byte) (*Range, error) {
-	return nr.apply(query, match, source)
+func (nr NativeRule) Apply(patternIndex int, query *sitter.Query, match *sitter.QueryMatch, source []byte) (*Range, error) {
+	return nr.apply(patternIndex, query, match, source)
 }
 func (nr NativeRule) Description() string { return nr.description }
 func (nr NativeRule) Name() string        { return nr.name }
-func (nr NativeRule) Pattern() []byte     { return nr.pattern }
+func (nr NativeRule) Patterns() [][]byte     { return nr.patterns }
 
 // A violation to a rule.
 //

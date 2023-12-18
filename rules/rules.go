@@ -16,22 +16,21 @@ import (
 // It returns the ranges, that violate the rule. It might return an empty slice, if
 // there are no violations to the given rule.
 func ApplyRule(file files.File, rule Rule) ([]*Range, error) {
-	query, matches, err := tslatex.GetMatches(file.Tree, rule.Pattern(), file.Source)
-	if err != nil {
-		return nil, err
-	}
-
-	log.Trace().Int("len", len(matches)).Str("rule", rule.Name()).Str("file", file.Path).Msg("Found matches for rule.")
-
-	var violations []*Range
-
-	for _, match := range matches {
-		rang, err := rule.Apply(query, match, file.Source)
+	var violations []*Range;
+	for i, pattern := range rule.Patterns() {
+		query, matches, err := tslatex.GetMatches(file.Tree, pattern, file.Source)
 		if err != nil {
-			panic(err)
+			return nil, err
 		}
-		if rang != nil {
-			violations = append(violations, rang)
+
+		for _, match := range matches {
+			rang, err := rule.Apply(i, query, match, file.Source)
+			if err != nil {
+				panic(err)
+			}
+			if rang != nil {
+				violations = append(violations, rang)
+			}
 		}
 	}
 

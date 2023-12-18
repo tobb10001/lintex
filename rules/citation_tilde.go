@@ -15,15 +15,17 @@ func CitationTilde() *NativeRule {
 		citationTilde = &NativeRule{
 			name:        "Citation Tilde",
 			description: "A citation must be preceded by a word, that ends in a tilde to prevent a linebreak in between.",
-			pattern: []byte(`
-				(text
-				  word: (word) @word 
-				  .
-				  ;; [Cc]iteauthor is also captured as citation.
-				  word: (citation) @cite (#not-match? @cite "[Cc]iteauthor")
-				)
-			`),
-			apply: func(query *sitter.Query, match *sitter.QueryMatch, input []byte) (*Range, error) {
+			patterns: [][]byte{
+				[]byte(`
+					(text
+					  word: (word) @word 
+					  .
+					  ;; [Cc]iteauthor is also captured as citation.
+					  word: (citation) @cite (#not-match? @cite "[Cc]iteauthor")
+					)
+				`),
+			},
+			apply: func(patternIndex int, query *sitter.Query, match *sitter.QueryMatch, input []byte) (*Range, error) {
 				var word, cite sitter.QueryCapture
 				for _, capture := range match.Captures {
 					capture_name := query.CaptureNameForId(capture.Index)

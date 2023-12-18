@@ -1,7 +1,7 @@
 name = "ERROR"
 description = "Tree-Sitter encountered an error while parsing the file. This is most probably a syntax error."
-pattern = '(ERROR) @error'
 capture = "error"
+patterns = ['(ERROR) @error']
 
 
 [[tests.obediences]]

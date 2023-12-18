@@ -1,6 +1,8 @@
 name = "Caption Trailing Period - Long"
 description = "A caption should not have a trailing period, because it would end up in the ToX as well."
-pattern = '''
+capture = "caption"
+patterns = [
+	'''
 	(caption
 	  .
 	  long: (curly_group
@@ -10,8 +12,8 @@ pattern = '''
 		)
 	  )
 	) @caption
-'''
-capture = "caption"
+	'''
+]
 
 
 [[tests.obediences]]
