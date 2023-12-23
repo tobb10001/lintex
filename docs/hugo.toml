@@ -1,0 +1,8 @@
+languageCode = 'en-us'
+title = 'LinTeX'
+theme = 'hugo-book'
+enableEmoji = true
+
+[params]
+BookTheme = 'auto'
+BookComments = false
