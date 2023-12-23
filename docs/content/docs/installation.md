@@ -11,25 +11,17 @@ bookHidden: false
 
 # Installation
 
-## Binary installation
+## Binary Installation
 
-{{< hint warning >}}
+_RECOMMENDED_
 
-**No releases so far**
+1. Go to [the project's Releases page](https://github.com/tobb10001/lintex/releases).
+2. Choose the release you want to install.
+3. Download the binary, that corresponds to your platform.
+4. Save the binary to your PATH, rename to `lintex` / `lintex.exe` if desired.
+5. Ensure you have permission to execute the binary.
 
-LinTeX will be made available to download through GitHub Releases. However, that's not
-configured yet, so currently the only way to install LinTeX is to build it from source.
-
-{{< /hint >}}
-
-
-## Source installation
-
-{{< hint warning >}}
-
-This section is incomplete. It only shows instructions for Unix-like systems.
-
-{{< /hint >}}
+## Source Installation
 
 - Download the source by cloning the Git repo.
 
@@ -37,6 +29,9 @@ This section is incomplete. It only shows instructions for Unix-like systems.
   $ git clone https://github.com/tobb10001/lintex
   $ cd lintex
   ```
+
+  Alternatively the source can be downloaded as ZIP- or TAR-Archive from the releases
+  page.
 
 - Run `go build` to build your binary.
 
