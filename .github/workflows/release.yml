@@ -6,8 +6,6 @@ name: Go
 on:
   push:
     branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
 
 jobs:
 
@@ -39,7 +37,21 @@ jobs:
       run: go test -v ./...
     
     - name: Archive artifacts
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v4
       with:
-        name: lintex
+        name: lintex-${{ matrix.platform.name }}
         path: ${{ github.workspace }}/lintex-${{ matrix.platform.name }}-amd64${{ matrix.platform.extension }}
+
+  release:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Download artifacts from build job.
+        uses: actions/download-artifact@v4
+      - name: Replace latest release
+        run: |
+          gh release delete latest
+          gh release create latest lintex-linux/* lintex-windows/*
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
