@@ -41,5 +41,5 @@ jobs:
     - name: Archive artifacts
       uses: actions/upload-artifact@v2
       with:
-        name: lintex-${{ matrix.platform.name }}-amd64${{ matrix.platform.extension }}
+        name: lintex
         path: ${{ github.workspace }}/lintex-${{ matrix.platform.name }}-amd64${{ matrix.platform.extension }}
