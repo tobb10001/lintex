@@ -5,20 +5,20 @@ name: Go
 
 on:
   push:
-    branches: [ "main" ]
+    tags: [ "**" ]
 
 jobs:
 
   build:
     strategy:
        matrix:
-        platform:
-          - os: ubuntu-latest
-            name: linux
-            extension: ""
-          - os: windows-latest
-            name: windows
-            extension: ".exe"
+         platform:
+           - os: ubuntu-latest
+             name: linux
+             extension: ""
+           - os: windows-latest
+             name: windows
+             extension: ".exe"
     runs-on: ${{ matrix.platform.os }}
 
     steps:
@@ -36,7 +36,7 @@ jobs:
     - name: Test
       run: go test -v ./...
     
-    - name: Archive artifacts
+    - name: Upload artifacts
       uses: actions/upload-artifact@v4
       with:
         name: lintex-${{ matrix.platform.name }}
@@ -46,12 +46,14 @@ jobs:
     runs-on: ubuntu-latest
     needs: build
     steps:
-      - name: Download artifacts from build job.
-        uses: actions/download-artifact@v4
-      - name: Replace latest release
-        run: |
-          gh release delete latest
-          gh release create --prerelease latest lintex-linux/* lintex-windows/*
-        env:
-          GH_TOKEN: ${{ github.token }}
-          GH_REPO: ${{ github.repository }}
+    - name: Checkout code
+      uses: actions/checkout@v3
+    - name: Download artifacts from build job.
+      uses: actions/download-artifact@v4
+    - name: Replace latest release
+      run: |
+        tag=$(echo "${{ github.ref }}" | sed "s|refs/tags/||")
+        gh release create --verify-tag "$tag" lintex-linux/* lintex-windows/*
+      env:
+        GH_TOKEN: ${{ github.token }}
+        GH_REPO: ${{ github.repository }}
