@@ -51,7 +51,7 @@ jobs:
       - name: Replace latest release
         run: |
           gh release delete latest
-          gh release create latest lintex-linux/* lintex-windows/*
+          gh release create --prerelease latest lintex-linux/* lintex-windows/*
         env:
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
