@@ -23,7 +23,7 @@ func TestCitationTilde(t *testing.T) {
 			error: false,
 		},
 		{
-			name: "No tilde, no space",
+			name:  "No tilde, no space",
 			input: []byte(`No tilde or space\cite{sth}.`),
 			error: true,
 		},
@@ -44,11 +44,11 @@ func TestCitationTilde(t *testing.T) {
 			error: true,
 		},
 		{
-			name: "citeauthor",
+			name:  "citeauthor",
 			input: []byte(`Allowed with \citeauthor{myself}.`),
 		},
 		{
-			name: "Citeauthor",
+			name:  "Citeauthor",
 			input: []byte(`Allowed with \Citeauthor{myself}.`),
 		},
 	}

@@ -50,7 +50,7 @@ func (nr NativeRule) Apply(patternIndex int, query *sitter.Query, match *sitter.
 }
 func (nr NativeRule) Description() string { return nr.description }
 func (nr NativeRule) Name() string        { return nr.name }
-func (nr NativeRule) Patterns() [][]byte     { return nr.patterns }
+func (nr NativeRule) Patterns() [][]byte  { return nr.patterns }
 
 // A violation to a rule.
 //

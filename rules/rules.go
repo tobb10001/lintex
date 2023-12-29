@@ -16,7 +16,7 @@ import (
 // It returns the ranges, that violate the rule. It might return an empty slice, if
 // there are no violations to the given rule.
 func ApplyRule(file files.File, rule Rule) ([]*Range, error) {
-	var violations []*Range;
+	var violations []*Range
 	for i, pattern := range rule.Patterns() {
 		query, matches, err := tslatex.GetMatches(file.Tree, pattern, file.Source)
 		if err != nil {

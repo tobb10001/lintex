@@ -59,10 +59,10 @@ func printSection(lines [][]byte, rang *rules.Range) {
 	} else {
 		h.Print(string(lines[rang.Start.Row][rang.Start.Column:]) + "\n")
 		for line := rang.Start.Row + 1; line < rang.End.Row; line++ {
-			fmt.Print(fmt.Sprintf("%4d: ", line+1))
+			fmt.Printf("%4d: ", line+1)
 			h.Print(string(lines[line]) + "\n")
 		}
-		fmt.Print(fmt.Sprintf("%4d: ", rang.End.Row+1))
+		fmt.Printf("%4d: ", rang.End.Row+1)
 		h.Print(string(lines[rang.End.Row][:rang.End.Column]))
 	}
 	fmt.Print(string(lines[rang.End.Row][rang.End.Column:]) + "\n")
