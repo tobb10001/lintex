@@ -50,7 +50,7 @@ type NativeRule struct {
 func (nr NativeRule) Apply(patternIndex int, query *sitter.Query, match *sitter.QueryMatch, source []byte) (*Range, error) {
 	return nr.apply(patternIndex, query, match, source)
 }
-func (nr NativeRule) ID() string { return nr.id }
+func (nr NativeRule) ID() string          { return nr.id }
 func (nr NativeRule) Description() string { return nr.description }
 func (nr NativeRule) Name() string        { return nr.name }
 func (nr NativeRule) Patterns() [][]byte  { return nr.patterns }

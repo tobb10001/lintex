@@ -83,7 +83,7 @@ make an MVP. Currently, nothing that's there should be considered stable in any 
     [`gopher-lua`](https://github.com/yuin/gopher-lua).
 
 - [ ] Control-comments to influence LinTeX' behavior in LaTeX files
-    
+
     E.g.: `% lintex: ignore_file` for non-text files.
 
 - [ ] Customization (command line, config files, ...)

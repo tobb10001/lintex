@@ -13,6 +13,7 @@ import (
 	"github.com/rs/zerolog/log"
 	sitter "github.com/smacker/go-tree-sitter"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 //go:embed toml/*
@@ -95,10 +96,8 @@ func checkInput(t *testing.T, input []byte, rule TomlRule, expectedViolations in
 		return false
 	}
 	violations, err := ApplyRule(files.File{Path: "testfile", Tree: tree, Source: input}, rule)
-	if !assert.Equal(t, expectedViolations, len(violations)) {
-		return false
-	}
-	return true
+	require.NoError(t, err)
+	return assert.Equal(t, expectedViolations, len(violations))
 }
 
 func TestTomlRule(t *testing.T, rule TomlRule) bool {

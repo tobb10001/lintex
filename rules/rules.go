@@ -38,7 +38,7 @@ func ApplyRule(file files.File, rule Rule) ([]*Range, error) {
 
 }
 
-func GetNativeRules() ([]Rule) {
+func GetNativeRules() []Rule {
 	return []Rule{
 		CitationTilde(),
 	}

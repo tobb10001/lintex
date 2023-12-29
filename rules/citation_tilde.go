@@ -19,7 +19,7 @@ func CitationTilde() *NativeRule {
 			patterns: [][]byte{
 				[]byte(`
 					(text
-					  word: (word) @word 
+					  word: (word) @word
 					  .
 					  ;; [Cc]iteauthor is also captured as citation.
 					  word: (citation) @cite (#not-match? @cite "[Cc]iteauthor")

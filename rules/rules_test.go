@@ -12,10 +12,11 @@ import (
 
 func TestNativeRuleID(t *testing.T) {
 	ruls := rules.GetNativeRules()
+	regex, err := regexp.Compile("vendored/([a-z_]+/)*([a-z_]+)")
+	require.NoError(t, err)
 
 	for _, rule := range ruls {
-		matched, err := regexp.MatchString("vendored/([a-z_]+/)*([a-z_]+)", rule.ID())
-		require.NoError(t, err)
+		matched := regex.MatchString(rule.ID())
 		assert.Truef(t, matched, "Rule ID doesn't match the RegEx: %#v", rule.ID())
 	}
 }
