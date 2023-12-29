@@ -29,6 +29,7 @@ type Rule interface {
 	// In any case, this method is responsible for determining the range, that should
 	// be highlighted.
 	Apply(int, *sitter.Query, *sitter.QueryMatch, []byte) (*Range, error)
+	ID() string
 	// Get the description of the rule.
 	Description() string
 	// Get the name of the rule.
@@ -39,6 +40,7 @@ type Rule interface {
 
 // A rule implemented completely in Go.
 type NativeRule struct {
+	id          string
 	name        string
 	description string
 	patterns    [][]byte
@@ -48,6 +50,7 @@ type NativeRule struct {
 func (nr NativeRule) Apply(patternIndex int, query *sitter.Query, match *sitter.QueryMatch, source []byte) (*Range, error) {
 	return nr.apply(patternIndex, query, match, source)
 }
+func (nr NativeRule) ID() string { return nr.id }
 func (nr NativeRule) Description() string { return nr.description }
 func (nr NativeRule) Name() string        { return nr.name }
 func (nr NativeRule) Patterns() [][]byte  { return nr.patterns }

@@ -1,4 +1,3 @@
-// This file is for testing the *vendored* TOML rules.
 package rules_test
 
 import (
@@ -11,18 +10,8 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestTomlRules(t *testing.T) {
-	ruls, err := rules.TomlGetVendored()
-	require.NoError(t, err)
-
-	for _, rule := range ruls {
-		t.Run(rule.Name(), func(t *testing.T) { rules.TestTomlRule(t, rule) })
-	}
-}
-
-func TestTomlRuleID(t *testing.T) {
-	ruls, err := rules.TomlGetVendored()
-	require.NoError(t, err)
+func TestNativeRuleID(t *testing.T) {
+	ruls := rules.GetNativeRules()
 
 	for _, rule := range ruls {
 		matched, err := regexp.MatchString("vendored/([a-z_]+/)*([a-z_]+)", rule.ID())

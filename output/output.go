@@ -32,7 +32,9 @@ func PrintRuleViolation(violation *rules.Violation) error {
 		violation.Range.Start.Row+1,
 		violation.Range.Start.Column,
 	)
-	fmt.Println(violation.Rule.Name())
+	id_color := color.New(color.FgGreen)
+	id_color.Print(violation.Rule.ID())
+	fmt.Printf(": %s\n", violation.Rule.Name())
 	printSection(lines, violation.Range)
 	fmt.Println(violation.Rule.Description())
 	fmt.Println("")

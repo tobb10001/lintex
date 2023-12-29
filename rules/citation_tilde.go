@@ -13,6 +13,7 @@ var citationTilde *NativeRule
 func CitationTilde() *NativeRule {
 	citationTildeOnce.Do(func() {
 		citationTilde = &NativeRule{
+			id:          "vendored/citation_tilde",
 			name:        "Citation Tilde",
 			description: "A citation must be preceded by a word, that ends in a tilde to prevent a linebreak in between.",
 			patterns: [][]byte{

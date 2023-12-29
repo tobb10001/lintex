@@ -3,12 +3,13 @@ package rules
 
 import (
 	"io/fs"
+	"strings"
 
 	"github.com/BurntSushi/toml"
 	"github.com/rs/zerolog/log"
 )
 
-func parseRuleFS(filesystem fs.FS, path string) (*TomlRule, error) {
+func parseRuleFS(filesystem fs.FS, path, prefix string) (*TomlRule, error) {
 	var rule TomlRuleParse
 	meta, err := toml.DecodeFS(filesystem, path, &rule)
 	if err != nil {
@@ -27,8 +28,8 @@ func parseRuleFS(filesystem fs.FS, path string) (*TomlRule, error) {
 			Strs("keys", keys).
 			Msg("Found unedecoded key in TOML file.")
 	}
-
-	return TomlRuleFromParse(&rule), nil
+	id, _ := strings.CutSuffix(prefix+path, ".toml")
+	return TomlRuleFromParse(&rule, id), nil
 }
 
 type TomlRuleParse struct {
@@ -39,12 +40,13 @@ type TomlRuleParse struct {
 	Tests       TomlRuleTestsParse
 }
 
-func TomlRuleFromParse(trp *TomlRuleParse) *TomlRule {
+func TomlRuleFromParse(trp *TomlRuleParse, id string) *TomlRule {
 	var patterns [][]byte
 	for _, pattern := range trp.Patterns {
 		patterns = append(patterns, []byte(pattern))
 	}
 	return &TomlRule{
+		id:          id,
 		name:        trp.Name,
 		description: trp.Description,
 		patterns:    patterns,

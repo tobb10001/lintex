@@ -19,6 +19,7 @@ import (
 var vendored_toml embed.FS
 
 type TomlRule struct {
+	id          string
 	name        string
 	description string
 	patterns    [][]byte
@@ -45,13 +46,14 @@ func (tr TomlRule) Apply(patternIndex int, query *sitter.Query, match *sitter.Qu
 	}
 	return nil, ApplyRuleError{fmt.Sprintf("Could not find a capture for the `@%s` predicate.", tr.capture)}
 }
+func (tr TomlRule) ID() string          { return tr.id }
 func (tr TomlRule) Description() string { return tr.description }
 func (tr TomlRule) Name() string        { return tr.name }
 func (tr TomlRule) Patterns() [][]byte  { return tr.patterns }
 
 func (tr TomlRule) Tests() TomlRuleTests { return tr.tests }
 
-func TomlRulesFromFS(filesystem fs.FS) ([]TomlRule, error) {
+func TomlRulesFromFS(filesystem fs.FS, prefix string) ([]TomlRule, error) {
 	var files []string
 	error := fs.WalkDir(filesystem, ".", func(path string, d fs.DirEntry, err error) error {
 		if err != nil {
@@ -69,7 +71,7 @@ func TomlRulesFromFS(filesystem fs.FS) ([]TomlRule, error) {
 	var rules []TomlRule
 	for _, path := range files {
 		log.Trace().Str("file", path).Msg("Parsing TOML rule.")
-		rule, err := parseRuleFS(filesystem, path)
+		rule, err := parseRuleFS(filesystem, path, prefix)
 		if err != nil {
 			return nil, err
 		}
@@ -80,7 +82,11 @@ func TomlRulesFromFS(filesystem fs.FS) ([]TomlRule, error) {
 }
 
 func TomlGetVendored() ([]TomlRule, error) {
-	return TomlRulesFromFS(vendored_toml)
+	filesystem, err := fs.Sub(vendored_toml, "toml")
+	if err != nil {
+		return nil, err
+	}
+	return TomlRulesFromFS(filesystem, "vendored/")
 }
 
 func checkInput(t *testing.T, input []byte, rule TomlRule, expectedViolations int) bool {

@@ -38,6 +38,12 @@ func ApplyRule(file files.File, rule Rule) ([]*Range, error) {
 
 }
 
+func GetNativeRules() ([]Rule) {
+	return []Rule{
+		CitationTilde(),
+	}
+}
+
 // Optain a list of all configured rules.
 func GetRules() ([]Rule, error) {
 	log.Debug().Msg("Getting rules...")
@@ -50,8 +56,6 @@ func GetRules() ([]Rule, error) {
 	for _, rule := range toml_vendored {
 		rules = append(rules, rule)
 	}
-	rules = append(rules, []Rule{
-		CitationTilde(),
-	}...)
+	rules = append(rules, GetNativeRules()...)
 	return rules, nil
 }
