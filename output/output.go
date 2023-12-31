@@ -55,7 +55,7 @@ func printSection(lines [][]byte, rang *rules.Range) {
 	h := color.New(color.FgYellow)
 
 	// The lines that contain the match.
-	fmt.Print(fmt.Sprintf("%4d: ", rang.Start.Row+1) + string(lines[rang.Start.Row][:rang.Start.Column]))
+	fmt.Printf("%4d: %s", rang.Start.Row+1, string(lines[rang.Start.Row][:rang.Start.Column]))
 	if rang.Start.Row == rang.End.Row {
 		h.Print(string(lines[rang.Start.Row][rang.Start.Column:rang.End.Column]))
 	} else {

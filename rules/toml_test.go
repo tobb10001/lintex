@@ -16,7 +16,17 @@ func TestTomlRules(t *testing.T) {
 	require.NoError(t, err)
 
 	for _, rule := range ruls {
-		t.Run(rule.Name(), func(t *testing.T) { rules.TestTomlRule(t, rule) })
+		t.Run(rule.Name(), func(t *testing.T) {
+			errs := rules.TestTomlRule(rule)
+			for _, err := range errs {
+				t.Errorf(
+					"Rule %s failed\nat %s\nwith error %s.",
+					err.Rule.Name(),
+					err.Location,
+					err.Err,
+				)
+			}
+		})
 	}
 }
 

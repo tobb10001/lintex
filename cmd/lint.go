@@ -10,7 +10,7 @@ import (
 	"lintex/rules"
 )
 
-func lint(cmd *cobra.Command, args []string) {
+func lint(*cobra.Command, []string) {
 
 	rulez, err := rules.GetRules()
 	if err != nil {

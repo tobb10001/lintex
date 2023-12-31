@@ -9,12 +9,9 @@ import (
 	"lintex/tslatex"
 	"os"
 	"path/filepath"
-	"testing"
 
 	"github.com/rs/zerolog/log"
 	sitter "github.com/smacker/go-tree-sitter"
-	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
 )
 
 //go:embed toml/*
@@ -96,25 +93,65 @@ func TomlGetVendored() ([]TomlRule, error) {
 	return TomlRulesFromFS(filesystem, "vendored/")
 }
 
-func checkInput(t *testing.T, input []byte, rule TomlRule, expectedViolations int) bool {
+func checkInput(input []byte, rule TomlRule, expectedViolations int) error {
 	tree, err := tslatex.GetTree(input)
-	if !assert.NoError(t, err) {
-		return false
+	if err != nil {
+		return err
 	}
 	violations, err := ApplyRule(files.File{Path: "testfile", Tree: tree, Source: input}, rule)
-	require.NoError(t, err)
-	return assert.Equal(t, expectedViolations, len(violations))
+	if err != nil {
+		return err
+	}
+	if expectedViolations != len(violations) {
+		return fmt.Errorf(
+			"Wrong number of violations: want=%d, got=%d",
+			expectedViolations,
+			len(violations),
+		)
+	}
+	return nil
 }
 
-func TestTomlRule(t *testing.T, rule TomlRule) bool {
-	result := true
-	t.Logf("Rule: %s, Obediences: %d, Violations: %d.", rule.Name(), len(rule.Tests().Obediences), len(rule.Tests().Violations))
+type TomlTestError struct {
+	Rule     *TomlRule
+	Location string
+	Err      error
+}
 
-	for _, obedience := range rule.Tests().Obediences {
-		result = checkInput(t, obedience.Input, rule, 0) && result
+func TestTomlRule(rule TomlRule) []TomlTestError {
+	tests := rule.Tests()
+	var errors []TomlTestError
+	log.Info().
+		Int("obediences", len(tests.Obediences)).
+		Int("violations", len(tests.Violations)).
+		Str("name", rule.Name()).
+		Msg("Testing rule.")
+
+	for i, obedience := range rule.Tests().Obediences {
+		err := checkInput(obedience.Input, rule, 0)
+		if err != nil {
+			errors = append(
+				errors,
+				TomlTestError{
+					Rule:     &rule,
+					Location: fmt.Sprintf("obedience #%d", i),
+					Err:      err,
+				},
+			)
+		}
 	}
-	for _, violation := range rule.Tests().Violations {
-		result = checkInput(t, violation.Input, rule, 1) && result
+	for i, violation := range rule.Tests().Violations {
+		err := checkInput(violation.Input, rule, 1)
+		if err != nil {
+			errors = append(
+				errors,
+				TomlTestError{
+					Rule:     &rule,
+					Location: fmt.Sprintf("violation #%d", i),
+					Err:      err,
+				},
+			)
+		}
 	}
-	return result
+	return errors
 }
