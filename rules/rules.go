@@ -6,6 +6,7 @@ package rules
 import (
 	"lintex/files"
 	"lintex/tslatex"
+	"os"
 
 	"github.com/rs/zerolog/log"
 )
@@ -47,15 +48,25 @@ func GetNativeRules() []Rule {
 // Optain a list of all configured rules.
 func GetRules() ([]Rule, error) {
 	log.Debug().Msg("Getting rules...")
+	var rules []Rule
+	// TOML: builtins
 	toml_vendored, err := TomlGetVendored()
 	if err != nil {
 		return nil, err
 	}
-	var rules []Rule
-	// rules = append(rules, toml_vendored...)
 	for _, rule := range toml_vendored {
 		rules = append(rules, rule)
 	}
+	// Native
 	rules = append(rules, GetNativeRules()...)
+	// TOML: local supplied
+	local_rules_fs := os.DirFS(".lintex/rules/")
+	toml_local, err := TomlRulesFromFS(local_rules_fs, "local/")
+	if err != nil {
+		return nil, err
+	}
+	for _, rule := range toml_local {
+		rules = append(rules, rule)
+	}
 	return rules, nil
 }
