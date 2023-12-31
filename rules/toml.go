@@ -7,6 +7,7 @@ import (
 	"io/fs"
 	"lintex/files"
 	"lintex/tslatex"
+	"os"
 	"path/filepath"
 	"testing"
 
@@ -80,6 +81,11 @@ func TomlRulesFromFS(filesystem fs.FS, prefix string) ([]TomlRule, error) {
 	}
 	log.Debug().Int("len", len(rules)).Msg("Found TOML rules.")
 	return rules, nil
+}
+
+func TomlGetLocal(directory string) ([]TomlRule, error) {
+	filesystem := os.DirFS(directory)
+	return TomlRulesFromFS(filesystem, "local/")
 }
 
 func TomlGetVendored() ([]TomlRule, error) {

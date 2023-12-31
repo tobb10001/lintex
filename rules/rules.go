@@ -6,7 +6,6 @@ package rules
 import (
 	"lintex/files"
 	"lintex/tslatex"
-	"os"
 
 	"github.com/rs/zerolog/log"
 )
@@ -60,8 +59,7 @@ func GetRules() ([]Rule, error) {
 	// Native
 	rules = append(rules, GetNativeRules()...)
 	// TOML: local supplied
-	local_rules_fs := os.DirFS(".lintex/rules/")
-	toml_local, err := TomlRulesFromFS(local_rules_fs, "local/")
+	toml_local, err := TomlGetLocal(".lintex/rules")
 	if err != nil {
 		return nil, err
 	}
