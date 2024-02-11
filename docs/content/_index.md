@@ -70,10 +70,11 @@ make an MVP. Currently, nothing that's there should be considered stable in any 
 - [x] Read rules from TOML files at compile time.
 - [x] Find violations for those rules in the parsed LaTeX files.
 - [x] Print out a report to the console.
+- [x] Reading rules at runtime from the user's filesystem.
+- [x] Engine to validate consistent spelling.
 
 ### Features that are not there
 
-- [ ] Reading rules at runtime from the user's filesystem.
 - [ ] LaTeX Tree-Sitter Playground here in the docs.
 - [ ] Advanced logic through an embedded programming language.
 
