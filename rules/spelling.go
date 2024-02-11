@@ -3,9 +3,16 @@ package rules
 import (
 	"fmt"
 
+	"github.com/mitchellh/mapstructure"
 	"github.com/rs/zerolog/log"
 	sitter "github.com/smacker/go-tree-sitter"
+	"github.com/spf13/viper"
 )
+
+type SpellcheckDefinition struct {
+	Correct string
+	Regex   string
+}
 
 type SpellingRule struct {
 	correct string
@@ -43,4 +50,27 @@ func (sr SpellingRule) Patterns() [][]byte {
 
 func NewSpellingRule(correct, regex string) SpellingRule {
 	return SpellingRule{correct: correct, regex: regex}
+}
+
+func GetSpelling() ([]SpellingRule, error) {
+	log.Trace().Any("viper", viper.AllSettings()).Send()
+	definitionsAny := viper.Get("lintex.spellchecks")
+	definitions, ok := definitionsAny.([]any)
+	if !ok {
+		return nil, fmt.Errorf("Couldn't read spellcheck definitions: Not an array: %+v (%T)", definitionsAny, definitions)
+	}
+	var res []SpellingRule
+	for i, definitionAny := range definitions {
+		var definition SpellcheckDefinition
+		err := mapstructure.Decode(definitionAny, &definition)
+		if err != nil {
+			log.Warn().
+				Err(err).
+				Int("position", i).
+				Msg("Couldn't read spellcheck definition.")
+		}
+		res = append(res, SpellingRule{correct: definition.Correct, regex: definition.Regex})
+	}
+	log.Debug().Int("len", len(res)).Msg("Created spelling rules.")
+	return res, nil
 }

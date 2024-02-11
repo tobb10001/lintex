@@ -65,5 +65,13 @@ func GetRules() ([]Rule, error) {
 	for _, rule := range toml_local {
 		rules = append(rules, rule)
 	}
+	// Spelling
+	spelling, err := GetSpelling()
+	if err != nil {
+		return nil, err
+	}
+	for _, rule := range spelling {
+		rules = append(rules, rule)
+	}
 	return rules, nil
 }
