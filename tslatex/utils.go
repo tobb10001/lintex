@@ -37,7 +37,6 @@ func GetMatches(tree *sitter.Node, pattern []byte, source []byte) (*sitter.Query
 
 // Generate the LaTeX syntax tree.
 func GetTree(source []byte) (*sitter.Node, error) {
-
 	parser := sitter.NewParser()
 	lang := GetLanguage()
 	parser.SetLanguage(lang)

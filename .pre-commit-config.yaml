@@ -16,5 +16,6 @@ repos:
     rev: v1.0.3
     hooks:
     -   id: go-fmt-import
+    -   id: gofumpt
     -   id: go-vet
     -   id: go-lint

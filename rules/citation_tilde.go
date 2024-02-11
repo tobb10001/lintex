@@ -7,8 +7,10 @@ import (
 	sitter "github.com/smacker/go-tree-sitter"
 )
 
-var citationTildeOnce sync.Once
-var citationTilde *NativeRule
+var (
+	citationTildeOnce sync.Once
+	citationTilde     *NativeRule
+)
 
 func CitationTilde() *NativeRule {
 	citationTildeOnce.Do(func() {

@@ -6,9 +6,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var (
-	WorkDir string
-)
+var WorkDir string
 
 var rootCmd = &cobra.Command{
 	Use:   "lintex",

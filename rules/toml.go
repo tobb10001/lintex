@@ -5,10 +5,11 @@ import (
 	"embed"
 	"fmt"
 	"io/fs"
-	"lintex/files"
-	"lintex/tslatex"
 	"os"
 	"path/filepath"
+
+	"lintex/files"
+	"lintex/tslatex"
 
 	"github.com/rs/zerolog/log"
 	sitter "github.com/smacker/go-tree-sitter"

@@ -3,9 +3,10 @@ package files_test
 import (
 	"embed"
 	"io/fs"
-	"lintex/files"
 	"path/filepath"
 	"testing"
+
+	"lintex/files"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"

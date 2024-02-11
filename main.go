@@ -2,8 +2,9 @@
 package main
 
 import (
-	"lintex/cmd"
 	"os"
+
+	"lintex/cmd"
 
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"

@@ -35,7 +35,6 @@ func ApplyRule(file files.File, rule Rule) ([]*Range, error) {
 	}
 
 	return violations, nil
-
 }
 
 func GetNativeRules() []Rule {

@@ -11,7 +11,6 @@ import (
 )
 
 func lint(*cobra.Command, []string) {
-
 	rulez, err := rules.GetRules()
 	if err != nil {
 		log.Fatal().Err(err).Msg("Error getting the rules.")
