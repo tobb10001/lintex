@@ -54,7 +54,11 @@ func NewSpellingRule(correct, regex string) SpellingRule {
 
 func GetSpelling() ([]SpellingRule, error) {
 	log.Trace().Any("viper", viper.AllSettings()).Send()
-	definitionsAny := viper.Get("lintex.spellchecks")
+	definitionsAny := viper.Get("spellchecks")
+	if definitionsAny == nil {
+		// There are simply no rules specified.
+		return []SpellingRule{}, nil
+	}
 	definitions, ok := definitionsAny.([]any)
 	if !ok {
 		return nil, fmt.Errorf("Couldn't read spellcheck definitions: Not an array: %+v (%T)", definitionsAny, definitions)
