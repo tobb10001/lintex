@@ -3,7 +3,6 @@ package files_test
 import (
 	"embed"
 	"io/fs"
-	"path/filepath"
 	"testing"
 
 	"lintex/files"
@@ -24,6 +23,6 @@ func TestFindFilesFS(t *testing.T) {
 
 	require.NoError(t, err)
 	require.Len(t, files, 2)
-	assert.Equal(t, filepath.FromSlash("directory/another_file.tex"), files[0])
-	assert.Equal(t, filepath.FromSlash("file.tex"), files[1])
+	assert.Equal(t, "directory/another_file.tex", files[0])
+	assert.Equal(t, "file.tex", files[1])
 }
