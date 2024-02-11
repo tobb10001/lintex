@@ -3,6 +3,7 @@ package rules
 
 import (
 	"embed"
+	"errors"
 	"fmt"
 	"io/fs"
 	"os"
@@ -82,6 +83,9 @@ func TomlRulesFromFS(filesystem fs.FS, prefix string) ([]TomlRule, error) {
 }
 
 func TomlGetLocal(directory string) ([]TomlRule, error) {
+	if _, err := os.Stat(directory); errors.Is(err, os.ErrNotExist) {
+		return []TomlRule{}, nil
+	}
 	filesystem := os.DirFS(directory)
 	return TomlRulesFromFS(filesystem, "local/")
 }

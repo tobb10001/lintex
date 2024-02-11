@@ -56,8 +56,10 @@ func GetRules() ([]Rule, error) {
 		rules = append(rules, rule)
 	}
 	// Native
+	log.Trace().Msg("Getting native rules...")
 	rules = append(rules, GetNativeRules()...)
 	// TOML: local supplied
+	log.Trace().Msg("Getting local rules...")
 	toml_local, err := TomlGetLocal(".lintex/rules")
 	if err != nil {
 		return nil, err
@@ -66,6 +68,7 @@ func GetRules() ([]Rule, error) {
 		rules = append(rules, rule)
 	}
 	// Spelling
+	log.Trace().Msg("Getting spelling rules...")
 	spelling, err := GetSpelling()
 	if err != nil {
 		return nil, err
