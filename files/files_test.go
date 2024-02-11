@@ -20,10 +20,10 @@ func TestFindFilesFS(t *testing.T) {
 	if err != nil {
 		t.Error("Couldn't get the sub-filesystem.")
 	}
-	files, err := files.FindFilesFS(filesystem, "")
+	files, err := files.FindFiles(filesystem, "")
 
 	require.NoError(t, err)
 	require.Len(t, files, 2)
-	assert.Equal(t, filepath.FromSlash("/directory/another_file.tex"), files[0])
-	assert.Equal(t, filepath.FromSlash("/file.tex"), files[1])
+	assert.Equal(t, filepath.FromSlash("directory/another_file.tex"), files[0])
+	assert.Equal(t, filepath.FromSlash("file.tex"), files[1])
 }

@@ -4,31 +4,18 @@ package output
 import (
 	"bytes"
 	"fmt"
-	"os"
-	"path/filepath"
 
 	"lintex/rules"
 
 	"github.com/fatih/color"
-	"github.com/rs/zerolog/log"
 )
 
 // Output the violation of a rule in a human readable format to stdout.
 func PrintRuleViolation(violation *rules.Violation) error {
 	lines := bytes.Split(violation.Source, []byte("\n"))
 
-	wd, err := os.Getwd()
-	if err != nil {
-		return err
-	}
-	relPath, err := filepath.Rel(wd, violation.File)
-	if err != nil {
-		log.Error().Str("abspath", violation.File).Msg("Couldn't convert abspath to relative.")
-		return err
-	}
-
 	fmt.Printf("%s:%d:%d\n",
-		relPath,
+		violation.File,
 		violation.Range.Start.Row+1,
 		violation.Range.Start.Column,
 	)

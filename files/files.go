@@ -2,8 +2,6 @@
 package files
 
 import (
-	"bufio"
-	"io"
 	"io/fs"
 	"os"
 	"path/filepath"
@@ -19,7 +17,7 @@ type File struct {
 	Source []byte
 }
 
-func FindFilesFS(filesystem fs.FS, prefix string) ([]string, error) {
+func FindFiles(filesystem fs.FS, prefix string) ([]string, error) {
 	var files []string
 	error := fs.WalkDir(filesystem, ".", func(path string, d fs.DirEntry, err error) error {
 		if err != nil {
@@ -33,52 +31,23 @@ func FindFilesFS(filesystem fs.FS, prefix string) ([]string, error) {
 	if error != nil {
 		return nil, error
 	}
-	for i := range files {
-		files[i] = filepath.Clean(prefix + "/" + files[i])
-	}
 	return files, nil
 }
 
-func FindFiles() ([]string, error) {
-	fs := os.DirFS(".")
+func GetFiles() ([]File, error) {
+	cwdFS := os.DirFS(".").(fs.ReadFileFS)
 	cwd, err := filepath.Abs(".")
 	if err != nil {
 		return nil, err
 	}
-	return FindFilesFS(fs, cwd)
-}
-
-// Higher level method to read a file.
-func Read(filename string) ([]byte, error) {
-	file, err := os.Open(filename)
-	if err != nil {
-		return nil, err
-	}
-	defer file.Close()
-
-	stat, err := file.Stat()
-	if err != nil {
-		return nil, err
-	}
-
-	bs := make([]byte, stat.Size())
-	_, err = bufio.NewReader(file).Read(bs)
-	if err != nil && err != io.EOF {
-		return nil, err
-	}
-
-	return bs, nil
-}
-
-func GetFiles() ([]File, error) {
-	paths, err := FindFiles()
+	paths, err := FindFiles(cwdFS, cwd)
 	if err != nil {
 		return nil, err
 	}
 
 	var files []File
 	for _, path := range paths {
-		source, err := Read(path)
+		source, err := cwdFS.ReadFile(path)
 		if err != nil {
 			return nil, err
 		}
