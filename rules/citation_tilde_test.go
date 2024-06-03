@@ -11,7 +11,7 @@ import (
 )
 
 func TestCitationTilde(t *testing.T) {
-	rule := rules.CitationTilde()
+	rule := rules.CitationTilde
 	tests := []struct {
 		name  string
 		input []byte
