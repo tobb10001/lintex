@@ -1,6 +1,8 @@
 package cmd
 
 import (
+	"fmt"
+
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 	"github.com/spf13/cobra"
@@ -31,6 +33,10 @@ func lint(*cobra.Command, []string) {
 
 	var violations []rules.Violation
 	for _, file := range files {
+		fmt.Println(file.Ignored)
+		if file.Ignored {
+			continue
+		}
 		for _, rule := range rulez {
 			log.Trace().Str("file", file.Path).Str("rule", rule.Name()).Msg("Applying rule to file.")
 

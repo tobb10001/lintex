@@ -12,9 +12,10 @@ import (
 )
 
 type File struct {
-	Path   string
-	Tree   *sitter.Node
-	Source []byte
+	Path    string
+	Tree    *sitter.Node
+	Source  []byte
+	Ignored bool
 }
 
 func FindFiles(filesystem fs.FS, prefix string) ([]string, error) {
@@ -55,11 +56,33 @@ func GetFiles() ([]File, error) {
 		if err != nil {
 			return nil, err
 		}
+		ignored, err := has_file_ignore_comment(tree, source)
+		if err != nil {
+			return nil, err
+		}
 		files = append(files, File{
-			Path:   path,
-			Tree:   tree,
-			Source: source,
+			Path:    path,
+			Tree:    tree,
+			Source:  source,
+			Ignored: *ignored,
 		})
 	}
 	return files, nil
+}
+
+func has_file_ignore_comment(tree *sitter.Node, source []byte) (*bool, error) {
+	pattern := []byte(`
+		(
+			(line_comment) @comment
+			(#match? @comment "\\% lintex: ignore_file($| )")
+		)
+	`)
+
+	_, matches, err := tslatex.GetMatches(tree, pattern, source)
+	if err != nil {
+		return nil, err
+	}
+
+	result := len(matches) > 0
+	return &result, nil
 }
