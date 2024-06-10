@@ -5,7 +5,6 @@ package rules
 
 import (
 	"lintex/files"
-	"lintex/tslatex"
 
 	"github.com/rs/zerolog/log"
 )
@@ -15,16 +14,16 @@ import (
 // In order to filter predicates, this method also needs access to the source.
 // It returns the ranges, that violate the rule. It might return an empty slice, if
 // there are no violations to the given rule.
-func ApplyRule(file files.File, rule Rule) ([]*Range, error) {
+func ApplyRule(file *files.File, rule Rule) ([]*Range, error) {
 	var violations []*Range
 	for i, pattern := range rule.Patterns() {
-		query, matches, err := tslatex.GetMatches(file.Tree, pattern, file.Source)
+		query, matches, err := file.GetMatches(pattern)
 		if err != nil {
 			return nil, err
 		}
 
 		for _, match := range matches {
-			rang, err := rule.Apply(i, query, match, file.Source)
+			rang, err := rule.Apply(i, query, match, file.Source())
 			if err != nil {
 				panic(err)
 			}

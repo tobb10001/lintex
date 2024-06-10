@@ -4,10 +4,10 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 
 	"lintex/files"
 	"lintex/rules"
-	"lintex/tslatex"
 )
 
 func TestSpellingRule(t *testing.T) {
@@ -36,12 +36,9 @@ func TestSpellingRule(t *testing.T) {
 
 	for _, testcase := range tests {
 		t.Run(testcase.name, func(t *testing.T) {
-			tree, err := tslatex.GetTree(testcase.input)
-			assert.NoError(t, err)
-			violations, err := rules.ApplyRule(
-				files.File{Path: "testfile", Tree: tree, Source: testcase.input},
-				rule,
-			)
+			file, err := files.NewFile("testfile", testcase.input)
+			require.NoError(t, err)
+			violations, err := rules.ApplyRule(file, rule)
 			assert.NoError(t, err)
 			if testcase.error {
 				assert.Equal(t, 1, len(violations))

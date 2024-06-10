@@ -1,8 +1,6 @@
 package cmd
 
 import (
-	"fmt"
-
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 	"github.com/spf13/cobra"
@@ -27,30 +25,27 @@ func lint(*cobra.Command, []string) {
 
 	_logArr := zerolog.Arr()
 	for _, file := range files {
-		_logArr.Str(file.Path)
+		_logArr.Str(file.Path())
 	}
 	log.Debug().Int("len", len(files)).Array("files", _logArr).Msg("Found files.")
 
 	var violations []rules.Violation
 	for _, file := range files {
-		fmt.Println(file.Ignored)
-		if file.Ignored {
+		if file.Ignored() {
 			continue
 		}
 		for _, rule := range rulez {
-			log.Trace().Str("file", file.Path).Str("rule", rule.Name()).Msg("Applying rule to file.")
+			log.Trace().Str("file", file.Path()).Str("rule", rule.Name()).Msg("Applying rule to file.")
 
 			ranges, err := rules.ApplyRule(file, rule)
 			if err != nil {
 				log.Warn().Err(err).Str("name", rule.Name()).Msg("Error applying a rule.")
 			}
 
-			log.Trace().Int("len", len(ranges)).Str("rule", rule.Name()).Str("file", file.Path).Msg("Found ranges.")
+			log.Trace().Int("len", len(ranges)).Str("rule", rule.Name()).Str("file", file.Path()).Msg("Found ranges.")
 
 			for _, rang := range ranges {
-				violations = append(violations, rules.Violation{
-					File: file.Path, Rule: rule, Range: rang, Source: file.Source,
-				})
+				violations = append(violations, rules.Violation{File: file, Rule: rule, Range: rang})
 			}
 		}
 	}

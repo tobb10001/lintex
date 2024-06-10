@@ -10,7 +10,6 @@ import (
 	"path/filepath"
 
 	"lintex/files"
-	"lintex/tslatex"
 
 	"github.com/rs/zerolog/log"
 	sitter "github.com/smacker/go-tree-sitter"
@@ -99,11 +98,11 @@ func TomlGetVendored() ([]TomlRule, error) {
 }
 
 func checkInput(input []byte, rule TomlRule, expectedViolations int) error {
-	tree, err := tslatex.GetTree(input)
+	file, err := files.NewFile("testfile", input)
 	if err != nil {
 		return err
 	}
-	violations, err := ApplyRule(files.File{Path: "testfile", Tree: tree, Source: input}, rule)
+	violations, err := ApplyRule(file, rule)
 	if err != nil {
 		return err
 	}

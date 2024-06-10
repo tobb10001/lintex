@@ -8,14 +8,41 @@ import (
 
 	"lintex/tslatex"
 
+	"github.com/rs/zerolog/log"
 	sitter "github.com/smacker/go-tree-sitter"
 )
 
 type File struct {
-	Path    string
-	Tree    *sitter.Node
-	Source  []byte
-	Ignored bool
+	path    string
+	tree    *sitter.Node
+	source  []byte
+	ignored bool
+}
+
+func NewFile(path string, source []byte) (*File, error) {
+	tree, err := tslatex.GetTree(source)
+	if err != nil {
+		return nil, err
+	}
+	ignored, err := has_file_ignore_comment(tree, source)
+	if err != nil {
+		return nil, err
+	}
+	log.Debug().Str("source", string(source)).Bool("ignored", *ignored).Send()
+	return &File{
+		path:    path,
+		tree:    tree,
+		source:  source,
+		ignored: *ignored,
+	}, nil
+}
+
+func (f *File) Ignored() bool  { return f.ignored }
+func (f *File) Path() string   { return f.path }
+func (f *File) Source() []byte { return f.source }
+
+func (f *File) GetMatches(pattern []byte) (*sitter.Query, []*sitter.QueryMatch, error) {
+	return tslatex.GetMatches(f.tree, pattern, f.source)
 }
 
 func FindFiles(filesystem fs.FS, prefix string) ([]string, error) {
@@ -35,7 +62,7 @@ func FindFiles(filesystem fs.FS, prefix string) ([]string, error) {
 	return files, nil
 }
 
-func GetFiles() ([]File, error) {
+func GetFiles() ([]*File, error) {
 	cwdFS := os.DirFS(".").(fs.ReadFileFS)
 	cwd, err := filepath.Abs(".")
 	if err != nil {
@@ -46,26 +73,17 @@ func GetFiles() ([]File, error) {
 		return nil, err
 	}
 
-	var files []File
+	var files []*File
 	for _, path := range paths {
 		source, err := cwdFS.ReadFile(path)
 		if err != nil {
 			return nil, err
 		}
-		tree, err := tslatex.GetTree(source)
+		currentFile, err := NewFile(path, source)
 		if err != nil {
 			return nil, err
 		}
-		ignored, err := has_file_ignore_comment(tree, source)
-		if err != nil {
-			return nil, err
-		}
-		files = append(files, File{
-			Path:    path,
-			Tree:    tree,
-			Source:  source,
-			Ignored: *ignored,
-		})
+		files = append(files, currentFile)
 	}
 	return files, nil
 }
@@ -82,6 +100,8 @@ func has_file_ignore_comment(tree *sitter.Node, source []byte) (*bool, error) {
 	if err != nil {
 		return nil, err
 	}
+
+	log.Debug().Int("matches", len(matches)).Send()
 
 	result := len(matches) > 0
 	return &result, nil

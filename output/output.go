@@ -12,10 +12,10 @@ import (
 
 // Output the violation of a rule in a human readable format to stdout.
 func PrintRuleViolation(violation *rules.Violation) error {
-	lines := bytes.Split(violation.Source, []byte("\n"))
+	lines := bytes.Split(violation.File.Source(), []byte("\n"))
 
 	fmt.Printf("%s:%d:%d\n",
-		violation.File,
+		violation.File.Path(),
 		violation.Range.Start.Row+1,
 		violation.Range.Start.Column,
 	)

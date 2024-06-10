@@ -1,6 +1,10 @@
 package rules
 
-import sitter "github.com/smacker/go-tree-sitter"
+import (
+	"lintex/files"
+
+	sitter "github.com/smacker/go-tree-sitter"
+)
 
 type ApplyRuleError struct {
 	message string
@@ -60,11 +64,9 @@ func (nr NativeRule) Patterns() [][]byte  { return nr.patterns }
 // This is the intermediate product produced by the linter.
 // It enables to later produce different kinds of output.
 type Violation struct {
-	File string
+	File *files.File
 	// Reference to the rule, that was violated.
 	Rule Rule
 	// Range, that shoudl be associated with the violation.
 	Range *Range
-	// Source code of the file, to track back the original code if needed.
-	Source []byte
 }
